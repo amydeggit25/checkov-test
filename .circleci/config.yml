@@ -3,15 +3,26 @@ jobs:
   checkov:
     docker:
       - image: ubuntu:latest
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD 
     steps:
       - checkout:
       - run:
           name: Running CheckOV
           command: docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov --directory /tf --soft-fail
+   terraform:
+     docker:
+      - image: ubuntu:latest
+    steps:
+      - checkout:
+      - run: 
+          name: Terraform Plan and validate
+          command: |
+            terraform plan -out tfplan
+            terraform show -json tfplan > tfplan.json
+            docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov -f tfplan.json --soft-fail      
 workflows:
   running-checkov:
     jobs:
       - checkov
+      - terraform
+          requires:
+            - checkov
