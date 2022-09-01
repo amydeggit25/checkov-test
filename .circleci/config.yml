@@ -3,25 +3,27 @@ jobs:
   checkov:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2 
-      with: 
-        fetch-depth: 0
-    - run: docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov --directory /tf --soft-fail
+#     - uses: actions/checkout@v2 
+#       with: 
+#         fetch-depth: 0
+      - run: docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov --directory /tf --soft-fail
   terraform:
-    needs: checkov
-    name: 'Terraform'
+#     needs: checkov
+#     name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v2
-        with: terraform_version: 1.2.0
-      - name: Terraform Format
-        run: terraform fmt
-      - name: Terraform Init 
-        run: terraform init
-      - name: Terraform Plan and validate
-        run: |
+      - checkout
+#         uses: actions/checkout@v2
+#       - uses: hashicorp/setup-terraform@v2
+#         with: terraform_version: 1.2.0
+      - run: terraform fmt
+        name: Terraform format
+      - run: terraform init
+        name: Terraform Init 
+      - run: 
+          name: Terraform Plan and validate
+          command: |
           terraform plan -out tfplan
           terraform show -json tfplan > tfplan.json
           docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov -f tfplan.json --soft-fail
+
