@@ -1,18 +1,17 @@
 version: 2.1
 jobs:
-  Hello-World:
+  checkov:
     docker:
-      - image: alpine:3.15
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD 
+      - image: ubuntu:latest
+#         auth:
+#           username: mydockerhub-user
+#           password: $DOCKERHUB_PASSWORD 
     steps:
+      - checkout:
       - run:
-          name: Saying Hello
-          command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+          name: Running CheckOV
+          command: docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov --directory /tf --soft-fail
 workflows:
-  Example-Workflow:
+  running-checkov:
     jobs:
-      - Hello-World
+      - checkov
