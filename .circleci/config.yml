@@ -1,29 +1,15 @@
 version: 2.1
 jobs:
-  checkov:
-    runs-on: ubuntu-latest
+  # running commands on a basic image
+  Hello-World:
+    docker:
+      - image: alpine:3.15
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
-#     - uses: actions/checkout@v2 
-#       with: 
-#         fetch-depth: 0
-      - run: docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov --directory /tf --soft-fail
-  terraform:
-#     needs: checkov
-#     name: 'Terraform'
-    runs-on: ubuntu-latest
-    steps:
-      - checkout
-#         uses: actions/checkout@v2
-#       - uses: hashicorp/setup-terraform@v2
-#         with: terraform_version: 1.2.0
-      - run: terraform fmt
-        name: Terraform format
-      - run: terraform init
-        name: Terraform Init 
-      - run: 
-          name: Terraform Plan and validate
+      - run:
+          name: Saying Hello
           command: |
-            terraform plan -out tfplan
-            terraform show -json tfplan > tfplan.json
-            docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov -f tfplan.json --soft-fail
-
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
