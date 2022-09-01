@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  check-ov:
+  checkov:
     docker:
       - image: ubuntu:latest
     steps:
@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Running CheckOV
           command: docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov --directory /tf --soft-fail
-   terraform-check:
+   terraform:
      docker:
       - image: ubuntu:latest
     steps:
@@ -22,7 +22,7 @@ jobs:
 workflows:
   running-checkov:
     jobs:
-      - check-ov
-      - terraform-check
+      - checkov
+      - terraform
           requires:
-            - check-ov
+            - checkov
