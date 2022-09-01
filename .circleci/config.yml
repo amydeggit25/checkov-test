@@ -23,7 +23,7 @@ jobs:
       - run: 
           name: Terraform Plan and validate
           command: |
-          terraform plan -out tfplan
-          terraform show -json tfplan > tfplan.json
-          docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov -f tfplan.json --soft-fail
+            terraform plan -out tfplan
+            terraform show -json tfplan > tfplan.json
+            docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov -f tfplan.json --soft-fail
 
